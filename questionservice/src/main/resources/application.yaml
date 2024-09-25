@@ -1,8 +1,9 @@
 server:
-  port: 8070
+  port: 8071
+
 spring:
   application:
-    name: user
+    name: question
   datasource:
     url: jdbc:mysql://localhost:3306/quizapp
     username: springstudent
@@ -10,6 +11,7 @@ spring:
   jpa:
     hibernate:
       ddl-auto: update
+
     properties:
       hibernate:
         dialect: org.hibernate.dialect.MySQLDialect
@@ -17,7 +19,3 @@ eureka:
   client:
     service-url:
       defaultZone: http://localhost:8761/eureka/
-
-token:
-  signing:
-    key: 53A73E5F1C4E0A2D3B5F2D784E6A1B423D6F247D1F6E5C3A596D635A75327855

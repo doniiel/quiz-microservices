@@ -1,6 +1,7 @@
-package com.quizapp.userservice.web.dto;
+package com.quizapp.userservice.web.dto.user;
 
 
+import com.quizapp.userservice.model.entity.Role;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -14,4 +15,5 @@ public class UserDTO {
     private Long id;
     private String username;
     private String email;
+    private Role role;
 }

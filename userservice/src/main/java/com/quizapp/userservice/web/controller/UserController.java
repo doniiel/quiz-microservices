@@ -1,13 +1,13 @@
 package com.quizapp.userservice.web.controller;
 
 import com.quizapp.userservice.service.UserService;
-import com.quizapp.userservice.web.dto.UserCreateRequest;
-import com.quizapp.userservice.web.dto.UserDTO;
-import com.quizapp.userservice.web.dto.UserUpdateRequest;
+import com.quizapp.userservice.web.dto.user.UserCreateRequest;
+import com.quizapp.userservice.web.dto.user.UserDTO;
+import com.quizapp.userservice.web.dto.user.UserUpdateRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -43,5 +43,16 @@ public class UserController {
     @DeleteMapping("/{id}")
     public ResponseEntity<String> deleteUser(@PathVariable("id") Long userId) {
         return new ResponseEntity<>(userService.remove(userId), HttpStatus.OK);
+    }
+
+    @GetMapping("/admin")
+    @PreAuthorize("hasRole('ADMIN')")
+    public String exampleAdmin() {
+        return "Hello, admin!";
+    }
+
+    @GetMapping("/get-admin")
+    public void getAdmin() {
+        userService.getAdmin();
     }
 }
