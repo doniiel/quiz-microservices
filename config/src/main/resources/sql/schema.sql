@@ -25,3 +25,15 @@ CREATE TABLE question(
     CONSTRAINT fk_quiz
         FOREIGN KEY (quiz_id) REFERENCES quiz(id)
 )AUTO_INCREMENT = 1;
+
+
+CREATE TABLE result (
+    id BIGINT PRIMARY KEY AUTO_INCREMENT,
+    user_id BIGINT NOT NULL,
+    quiz_id BIGINT NOT NULL,
+    score INT,
+    CONSTRAINT fk_user
+        FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE ON UPDATE CASCADE,
+    CONSTRAINT fk_quiz
+        FOREIGN KEY (quiz_id) REFERENCES quiz(id) ON DELETE CASCADE ON UPDATE CASCADE
+) AUTO_INCREMENT = 1;
