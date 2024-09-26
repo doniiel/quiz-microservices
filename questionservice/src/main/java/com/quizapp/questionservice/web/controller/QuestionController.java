@@ -38,8 +38,8 @@ public class QuestionController {
         return questionService.getAllByLevel(level);
     }
 
-    @GetMapping("/lvl&cat/{}")
-    public List<QuestionDTO> getAllByCategoryAndLevel(String level, String category) {
+    @GetMapping("/lvl&cat")
+    public List<QuestionDTO> getAllByCategoryAndLevel(@RequestParam String level, @RequestParam String category) {
         return questionService.getAllByCategoryAndLevel(level, category);
     }
 
