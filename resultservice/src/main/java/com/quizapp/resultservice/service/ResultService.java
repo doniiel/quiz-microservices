@@ -9,6 +9,9 @@ public interface ResultService {
 
     ResultDTO getById(Long id);
     List<ResultDTO> getAll();
+
+    List<ResultDTO> getAllByUserId(Long userId);
+
     ResultDTO update(ResultDTO resultDTO);
     ResultDTO create(ResultDTO resultDTO);
     String remove(Long id);

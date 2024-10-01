@@ -5,7 +5,7 @@ import com.quizapp.resultservice.model.exception.ResultNotFoundException;
 import com.quizapp.resultservice.repository.ResultRepository;
 import com.quizapp.resultservice.service.ResultService;
 import com.quizapp.resultservice.web.dto.ResultDTO;
-import com.quizapp.resultservice.web.dto.ResultMapper;
+import com.quizapp.resultservice.web.mapper.ResultMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -30,6 +30,14 @@ public class ResultServiceImpl implements ResultService {
     @Override
     public List<ResultDTO> getAll() {
         List<Result> results = resultRepository.findAll();
+        return results.stream().
+                map(resultMapper::mapToDto)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<ResultDTO> getAllByUserId(Long userId) {
+        List<Result> results = resultRepository.findByUserId(userId);
         return results.stream().
                 map(resultMapper::mapToDto)
                 .collect(Collectors.toList());

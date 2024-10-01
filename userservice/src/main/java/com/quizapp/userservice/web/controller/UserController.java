@@ -1,9 +1,12 @@
 package com.quizapp.userservice.web.controller;
 
 import com.quizapp.userservice.service.UserService;
-import com.quizapp.userservice.web.dto.user.UserCreateRequest;
-import com.quizapp.userservice.web.dto.user.UserDTO;
-import com.quizapp.userservice.web.dto.user.UserUpdateRequest;
+import com.quizapp.userservice.web.dto.ResultDTO;
+import com.quizapp.userservice.web.dto.UserDTO;
+import com.quizapp.userservice.web.request.RegisterRequest;
+import com.quizapp.userservice.web.request.UserUpdateRequest;
+import jakarta.validation.Valid;
+import jakarta.ws.rs.Path;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,38 +24,58 @@ public class UserController {
     private final UserService userService;
 
     @GetMapping("/{id}")
-    public UserDTO getUserById(@PathVariable("id") Long userId) {
-        return userService.getById(userId);
+    public ResponseEntity<UserDTO> getUserById(@PathVariable("id") Long userId) {
+        return ResponseEntity.ok(userService.getUserById(userId));
     }
 
-    @GetMapping("")
-    public List<UserDTO> getAllUsers() {
-        return userService.getAll();
+    @GetMapping("/byEmail/{email}")
+    public ResponseEntity<UserDTO> getUserByEmail(@PathVariable String email) {
+        return ResponseEntity.ok(userService.getUserByEmail(email));
     }
 
-    @PostMapping("")
-    public UserDTO createUser(@RequestBody UserCreateRequest request) {
-        return userService.create(request);
+    @GetMapping("/byUsername/{username}")
+    public ResponseEntity<UserDTO> getUserByUsername(@PathVariable String username) {
+        UserDTO user = userService.getUserByUsername(username);
+        if (user == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
+        return ResponseEntity.ok(user);
     }
 
-    @PutMapping("")
-    public UserDTO updateUser(@RequestBody UserUpdateRequest request) {
-        return userService.update(request);
+    @GetMapping("/getAll")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    public ResponseEntity<List<UserDTO>> getAllUsers() {
+        return ResponseEntity.ok(userService.getAll());
+    }
+
+    @PostMapping("/create")
+    public ResponseEntity<UserDTO> createUser(@Valid @RequestBody RegisterRequest request) {
+        return ResponseEntity.ok(userService.createUser(request));
+    }
+
+    @PutMapping("/update")
+    @PreAuthorize("hasRole('ROLE_ADMIN') or @userService.getUserById(#request.id).username == principal")
+    public ResponseEntity<UserDTO> updateUser(@Valid @RequestBody UserUpdateRequest request) {
+        return ResponseEntity.ok(userService.updateUser(request));
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<String> deleteUser(@PathVariable("id") Long userId) {
-        return new ResponseEntity<>(userService.remove(userId), HttpStatus.OK);
+    @PreAuthorize("hasRole('ROLE_ADMIN') or @userService.getUserById(#id).username == principal")
+    public ResponseEntity<Void> deleteUser(@PathVariable("id") Long userId) {
+        userService.deleteUserById(userId);
+        return ResponseEntity.ok().build();
     }
 
     @GetMapping("/admin")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public String exampleAdmin() {
         return "Hello, admin!";
     }
 
-    @GetMapping("/get-admin")
-    public void getAdmin() {
-        userService.getAdmin();
+    /* FEIGN CLIENT API */
+
+    @GetMapping("/results/{id}")
+    public List<ResultDTO> getAllByUserId(@PathVariable("id") Long userId) {
+        return userService.getResultsByUserId(userId);
     }
 }

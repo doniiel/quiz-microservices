@@ -1,11 +1,13 @@
 package com.quizapp.questionservice.model.entity;
 
+import com.quizapp.questionservice.model.enums.Level;
 import jakarta.persistence.*;
-import jdk.jfr.DataAmount;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import java.util.List;
 
 @Entity
 @Table(name="question")
@@ -23,14 +25,15 @@ public class Question {
     @Column(name = "quiz_id")
     private Long quizId;
 
-    @Column(name = "question")
     private String question;
-
-    @Column(name = "category")
     private String category;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "difficulty")
     private Level level;
+
+    @OneToMany(mappedBy = "question", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<QuestionOption> options;
+
 
 }

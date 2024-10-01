@@ -2,8 +2,6 @@ package com.quizapp.questionservice.web.controller;
 
 import com.quizapp.questionservice.service.QuestionService;
 import com.quizapp.questionservice.web.dto.QuestionDTO;
-import com.quizapp.questionservice.web.dto.QuestionRequest;
-import jakarta.ws.rs.Path;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -23,17 +21,17 @@ public class QuestionController {
         return questionService.getById(questionId);
     }
 
-    @GetMapping("/qnum/{id}")
-    public List<QuestionDTO> getAllByQuizId(@PathVariable("id") Long quizId) {
-        return questionService.getAllByQuizId(quizId);
+    @GetMapping("/quiz/{quizId}")
+    public List<QuestionDTO> getAllByQuizId(@PathVariable("quizId") Long id) {
+        return questionService.getAllByQuizId(id);
     }
 
-    @GetMapping("/cat/{name}")
+    @GetMapping("/catagory/{name}")
     public List<QuestionDTO> getAllByCategory(@PathVariable("name") String category) {
         return questionService.getAllByCategory(category);
     }
 
-    @GetMapping("/lvl/{name}")
+    @GetMapping("/level/{name}")
     public List<QuestionDTO> getAllByQuestion(@PathVariable("name") String level) {
         return questionService.getAllByLevel(level);
     }
@@ -49,13 +47,13 @@ public class QuestionController {
     }
 
     @PutMapping("")
-    public QuestionDTO update(@RequestBody QuestionRequest questionRequest) {
-        return questionService.update(questionRequest);
+    public QuestionDTO update(@RequestBody QuestionDTO request) {
+        return questionService.update(request);
     }
 
-    @PostMapping("")
-    public QuestionDTO create(@RequestBody QuestionRequest questionRequest) {
-        return questionService.create(questionRequest);
+    @PostMapping("/questions")
+    public QuestionDTO create(@RequestBody QuestionDTO request) {
+        return questionService.create(request);
     }
 
     @DeleteMapping("/{id}")

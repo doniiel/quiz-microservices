@@ -2,6 +2,7 @@ package com.quizapp.quizservice.service;
 
 import com.quizapp.quizservice.model.entity.Level;
 import com.quizapp.quizservice.model.entity.Quiz;
+import com.quizapp.quizservice.web.dto.QuestionDTO;
 import com.quizapp.quizservice.web.dto.QuizDTO;
 
 import java.util.List;
@@ -15,4 +16,8 @@ public interface QuizService {
     QuizDTO update(QuizDTO quizDTO);
     QuizDTO create(QuizDTO quizDTO);
     String remove(Long id);
+
+    /* FEIGN CLIENT METHODS */
+    QuestionDTO createQuestion(QuestionDTO questionDTO);
+    List<QuestionDTO> getAllByQuizId(Long id);
 }

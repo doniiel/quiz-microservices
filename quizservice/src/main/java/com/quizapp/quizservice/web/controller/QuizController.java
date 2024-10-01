@@ -1,8 +1,12 @@
 package com.quizapp.quizservice.web.controller;
 
+import com.quizapp.quizservice.client.QuestionClient;
 import com.quizapp.quizservice.model.entity.Quiz;
 import com.quizapp.quizservice.service.QuizService;
+import com.quizapp.quizservice.web.dto.QuestionDTO;
+import com.quizapp.quizservice.web.dto.QuestionOption;
 import com.quizapp.quizservice.web.dto.QuizDTO;
+import jakarta.ws.rs.Path;
 import lombok.RequiredArgsConstructor;
 import org.hibernate.Remove;
 import org.springframework.http.HttpStatus;
@@ -20,8 +24,8 @@ public class QuizController {
     private final QuizService quizService;
 
     @GetMapping("/{id}")
-    public QuizDTO getById(@PathVariable("id") Long quizId) {
-        return quizService.getById(quizId);
+    public ResponseEntity<QuizDTO> getById(@PathVariable("id") Long quizId) {
+        return ResponseEntity.ok(quizService.getById(quizId));
     }
 
     @GetMapping("/title/{str}")
@@ -53,4 +57,16 @@ public class QuizController {
     public ResponseEntity<String> remove(@PathVariable("id") Long quizId) {
         return new ResponseEntity<>(quizService.remove(quizId), HttpStatus.OK);
     }
+
+    /* Feign Client API*/
+    @PostMapping("/questions")
+    public QuestionDTO create(@RequestBody QuestionDTO request) {
+        return quizService.createQuestion(request);
+    }
+
+    @GetMapping("/quiz/{quizId}")
+    public List<QuestionDTO> getAllByQuizId(@PathVariable("quizId") Long id) {
+        return quizService.getAllByQuizId(id);
+    }
+
 }

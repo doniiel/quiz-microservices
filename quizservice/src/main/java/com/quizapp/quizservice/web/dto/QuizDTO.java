@@ -11,4 +11,5 @@ public class QuizDTO {
     private String title;
     private String level;
     private String category;
+
 }

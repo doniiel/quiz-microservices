@@ -27,7 +27,16 @@ CREATE TABLE question(
 )AUTO_INCREMENT = 1;
 
 
-CREATE TABLE result (
+CREATE TABLE question_option (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    question_id BIGINT NOT NULL,
+    option_text VARCHAR(255),
+    correct INT,
+    FOREIGN KEY (question_id) REFERENCES question(id) ON DELETE CASCADE
+);
+
+
+CREATE TABLE result(
     id BIGINT PRIMARY KEY AUTO_INCREMENT,
     user_id BIGINT NOT NULL,
     quiz_id BIGINT NOT NULL,

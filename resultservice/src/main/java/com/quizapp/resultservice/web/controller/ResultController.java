@@ -26,6 +26,11 @@ public class ResultController {
         return resultService.getAll();
     }
 
+    @GetMapping("/results/{id}")
+    public List<ResultDTO> getAllByUserId(@PathVariable("id") Long userId) {
+        return resultService.getAllByUserId(userId);
+    }
+
     @PutMapping("")
     public ResultDTO update(@RequestBody  ResultDTO resultDTO) {
         return resultService.update(resultDTO);
