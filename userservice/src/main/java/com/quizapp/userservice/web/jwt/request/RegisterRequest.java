@@ -1,4 +1,4 @@
-package com.quizapp.userservice.web.request;
+package com.quizapp.userservice.web.jwt.request;
 
 
 import jakarta.validation.constraints.*;
