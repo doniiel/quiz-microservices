@@ -44,20 +44,26 @@ public class ResultServiceImpl implements ResultService {
     }
 
     @Override
-    public ResultDTO update(ResultDTO resultDTO) {
-        Result result = resultMapper.mapToEntity(resultDTO);
-        resultRepository.save(result);
-        return resultMapper.mapToDto(result);
+    public ResultDTO update(Long id, ResultDTO resultDTO) {
+        validate(resultDTO);
+        Result exist = resultRepository.findById(id).orElseThrow(
+                () -> new ResultNotFoundException("Result not found for id: " + id)
+        );
+        exist.setUserId(resultDTO.getUserId());
+        exist.setQuizId(resultDTO.getQuizId());
+        exist.setScore(resultDTO.getScore());
+
+        Result dbResult = resultRepository.save(exist);
+        return resultMapper.mapToDto(dbResult);
     }
 
     @Override
     public ResultDTO create(ResultDTO resultDTO) {
-        if (resultDTO == null) {
-            throw new IllegalArgumentException("ResultDTO must not be null");
-        }
+        validate(resultDTO);
+
         Result result = resultMapper.mapToEntity(resultDTO);
-        resultRepository.save(result);
-        return resultMapper.mapToDto(result);
+        Result dbResult = resultRepository.save(result);
+        return resultMapper.mapToDto(dbResult);
     }
 
     @Override
@@ -67,5 +73,20 @@ public class ResultServiceImpl implements ResultService {
         );
         resultRepository.delete(result);
         return "Result with id: " + id + " deleted";
+    }
+
+    private void validate(ResultDTO resultDTO) {
+        if (resultDTO.getId() == null) {
+            throw new IllegalArgumentException("ResultDTO must not be null");
+        }
+        if (resultDTO.getUserId() == null) {
+            throw new IllegalArgumentException("User ID must not be null");
+        }
+        if (resultDTO.getQuizId() == null) {
+            throw new IllegalArgumentException("Quiz ID must not be null");
+        }
+        if (resultDTO.getScore() == null || resultDTO.getScore() < 0) {
+            throw new IllegalArgumentException("Score must be a non-negative integer");
+        }
     }
 }

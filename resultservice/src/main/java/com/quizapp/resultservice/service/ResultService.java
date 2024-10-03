@@ -12,7 +12,7 @@ public interface ResultService {
 
     List<ResultDTO> getAllByUserId(Long userId);
 
-    ResultDTO update(ResultDTO resultDTO);
+    ResultDTO update(Long id, ResultDTO resultDTO);
     ResultDTO create(ResultDTO resultDTO);
     String remove(Long id);
 }

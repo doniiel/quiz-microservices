@@ -66,16 +66,17 @@ public class UserController {
 
     // Update an existing user
     // URL: http://localhost:8762/quizapp/user/update
-    @PutMapping("/update")
-    @PreAuthorize("hasRole('ROLE_ADMIN') or @userService.getUserById(#request.id).username == principal")
-    public ResponseEntity<UserDTO> updateUser(@Valid @RequestBody UserUpdateRequest request) {
-        return ResponseEntity.ok(userService.updateUser(request));
+    @PutMapping("/{id}")
+    @PreAuthorize("hasRole('ROLE_ADMIN') or @userService.getUserById(#id).username == principal.username")
+    public ResponseEntity<UserDTO> updateUser(@PathVariable Long id,
+                                              @Valid @RequestBody UserUpdateRequest request) {
+        return ResponseEntity.ok(userService.updateUser(id, request));
     }
 
     // Delete a user by ID
     // URL: http://localhost:8762/quizapp/user/{id}
     @DeleteMapping("/{id}")
-    @PreAuthorize("hasRole('ROLE_ADMIN') or @userService.getUserById(#id).username == principal")
+    @PreAuthorize("hasRole('ROLE_ADMIN') or @userService.getUserById(#id).username == principal.username")
     public ResponseEntity<Void> deleteUser(@PathVariable("id") Long userId) {
         userService.deleteUserById(userId);
         return ResponseEntity.ok().build();

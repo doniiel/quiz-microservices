@@ -64,40 +64,38 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public UserDTO updateUser(UserUpdateRequest request) {
-        User user = userRepository.findByUsername(request.getUsername()).orElseThrow(
-                () -> new NotFoundException("User with username: " + request.getUsername() + " not found")
+    public UserDTO updateUser(Long id, UserUpdateRequest request) {
+        User user = userRepository.findById(id).orElseThrow(
+                () -> new NotFoundException("User with id: " + id + " not found")
         );
+        user.setId(id);
+
+        validateUsername(request.getUsername());
+        user.setUsername(request.getUsername());
 
         if (request.getPassword() != null && !request.getPassword().isEmpty()) {
-            String hashedPassword = passwordEncoder.encode(request.getPassword());
-            user.setPassword(hashedPassword);
+           user.setPassword(passwordEncoder.encode(request.getPassword()));
         }
+
         user.setUserDetails(request.getUserDetails());
 
-        userRepository.save(user);
-        return mapToDTO(user);
+        User dbUser = userRepository.save(user);
+        return mapToDTO(dbUser);
     }
 
     @Override
     public UserDTO createUser(RegisterRequest request) {
-        String username = request.getUsername();
-        boolean exist = userRepository.existsByUsername(username);
+        validateUsername(request.getUsername());
 
-        if (exist) {
-            throw new UserAlreadyExistsException("Username already exists: " + username);
-        }
-
-        String hashedPassword = passwordEncoder.encode(request.getPassword());
         User user  = User.builder()
                 .username(request.getUsername())
                 .email(request.getEmail())
-                .password(hashedPassword)
+                .password(passwordEncoder.encode(request.getPassword()))
                 .role(Role.ROLE_USER)
                 .build();
 
-        userRepository.save(user);
-        return mapToDTO(user);
+        User dbUser = userRepository.save(user);
+        return mapToDTO(dbUser);
     }
 
 
@@ -122,5 +120,11 @@ public class UserServiceImpl implements UserService {
 
     private User mapToEntity(UserDTO userDTO) {
         return userMapper.toEntity(userDTO);
+    }
+
+    private void validateUsername(String username) {
+        if (userRepository.existsByUsername(username)) {
+            throw new UserAlreadyExistsException("Username already exists: " + username);
+        }
     }
 }

@@ -13,7 +13,7 @@ public interface UserService {
     UserDTO getUserByEmail(String email);
     UserDTO getUserByUsername(String username);
     List<UserDTO> getAll();
-    UserDTO updateUser(UserUpdateRequest request);
+    UserDTO updateUser(Long id, UserUpdateRequest request);
     UserDTO createUser(RegisterRequest request);
     void deleteUserById(Long id);
 

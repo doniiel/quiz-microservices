@@ -55,8 +55,8 @@ public class QuestionController {
     }
 
     // GET all questions
-    // URL: http://localhost:8762/quizapp/question
-    @GetMapping
+    // URL: http://localhost:8762/quizapp/question/getAll
+    @GetMapping("/getAll")
     public ResponseEntity<List<QuestionDTO>> getAll() {
         return ResponseEntity.ok(questionService.getAll());
     }

@@ -54,17 +54,23 @@ public class QuizController {
         return ResponseEntity.ok(quizService.getCategory(category));
     }
 
+    // GET all quizzes by category
+    // URL: http://localhost:8762/quizapp/quizzes/getAll
+    @GetMapping("/getAll")
+    public ResponseEntity<List<QuizDTO>> getAll() {
+        return ResponseEntity.ok(quizService.getAll());
+    }
+
     // PUT request to update a quiz by ID
     // URL: http://localhost:8762/quizapp/quizzes/{id}
     @PutMapping("/{id}")
     public ResponseEntity<QuizDTO> update(@PathVariable Long id,@RequestBody QuizDTO quizDTO) {
-        quizDTO.setId(id);
-        return ResponseEntity.ok(quizService.update(quizDTO));
+        return ResponseEntity.ok(quizService.update(id,quizDTO));
     }
 
     // POST request to create a new quiz
-    // URL: http://localhost:8762/quizapp/quizzes
-    @PostMapping
+    // URL: http://localhost:8762/quizapp/quizzes/create
+    @PostMapping("/create")
     public ResponseEntity<QuizDTO> create(@RequestBody QuizDTO quizDTO) {
         return new ResponseEntity<>(quizService.create(quizDTO), HttpStatus.CREATED);
     }

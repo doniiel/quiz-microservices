@@ -13,7 +13,8 @@ public interface QuizService {
 
     List<QuizDTO> getAllByLevel(String level);
     List<QuizDTO> getCategory(String category);
-    QuizDTO update(QuizDTO quizDTO);
+    List<QuizDTO> getAll();
+    QuizDTO update(Long id, QuizDTO quizDTO);
     QuizDTO create(QuizDTO quizDTO);
     String remove(Long id);
 

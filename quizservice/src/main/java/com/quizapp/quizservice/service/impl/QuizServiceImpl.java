@@ -62,24 +62,40 @@ public class QuizServiceImpl implements QuizService {
                 .map(quizMapper::mapToDTO)
                 .collect(Collectors.toList());
     }
+    @Override
+    public List<QuizDTO> getAll() {
+        List<Quiz> quizzes = quizRepository.findAll();
+        return quizzes.stream()
+                .map(quizMapper::mapToDTO)
+                .collect(Collectors.toList());
+    }
 
     @Override
-    public QuizDTO update(QuizDTO quizDTO) {
+    public QuizDTO update(Long id, QuizDTO quizDTO) {
         validateLevel(quizDTO.getLevel());
-        Quiz existingQuiz = quizRepository.findById(quizDTO.getId())
+        Quiz existingQuiz = quizRepository.findById(id)
                 .orElseThrow(() -> new QuizNotFoundException("Quiz with id: " + quizDTO.getId() + " not found"));
-        Quiz updatedQuiz = quizMapper.mapToEntity(quizDTO);
-        updatedQuiz.setId(existingQuiz.getId());
 
-        return quizMapper.mapToDTO(quizRepository.save(updatedQuiz));
+        if (quizDTO.getTitle() != null && !quizDTO.getTitle().isEmpty()) {
+            existingQuiz.setTitle(quizDTO.getTitle());
+        }
+        if (quizDTO.getCategory() != null && !quizDTO.getCategory().isEmpty()) {
+            existingQuiz.setCategory(quizDTO.getCategory());
+        }
+        existingQuiz.setLevel(Level.valueOf(quizDTO.getLevel()));
+
+        Quiz dbQuiz = quizRepository.save(existingQuiz);
+        return quizMapper.mapToDTO(dbQuiz);
 
     }
 
     @Override
     public QuizDTO create(QuizDTO quizDTO) {
         validateLevel(quizDTO.getLevel());
-        Quiz newQuiz = quizMapper.mapToEntity(quizDTO);
-        return quizMapper.mapToDTO(quizRepository.save(newQuiz));
+
+        Quiz quiz = quizMapper.mapToEntity(quizDTO);
+        Quiz dbQuiz = quizRepository.save(quiz);
+        return quizMapper.mapToDTO(dbQuiz);
     }
 
     @Override
