@@ -25,7 +25,7 @@ public class QuestionServiceImpl implements QuestionService {
     @Override
     public QuestionDTO getById(Long questionId) {
         Question question = questionRepository.findById(questionId).orElseThrow(
-                () -> new QuestionNotFoundException("Question with id: " + questionId + " not found")
+                () -> new QuestionNotFoundException("Question not found with id: " + questionId)
         );
         return questionMapper.mapToDTO(question);
     }
@@ -72,56 +72,40 @@ public class QuestionServiceImpl implements QuestionService {
 
     @Override
     @Transactional
-    public QuestionDTO update(QuestionDTO request) {
-        Question exist = questionRepository.findById(request.getId()).orElseThrow(
-                () -> new QuestionNotFoundException("Question not found with id: " + request.getId())
+    public QuestionDTO update(Long questionId, QuestionDTO questionDTO) {
+        Question question = questionRepository.findById(questionId).orElseThrow(
+                () -> new QuestionNotFoundException("Question not found with id: " + questionId)
         );
 
-        if (request.getQuestion() == null || request.getOptions().size() != 4) {
-            throw new InvalidInputException("A question must have exactly 4 options");
-        }
-        boolean hasCorrectOption = request.getOptions().stream()
-                .anyMatch(option -> option.getCorrect() == 1);
-        if (!hasCorrectOption) {
-            throw new InvalidInputException("At least one option must be marked as correct");
-        }
-        exist.setQuestion(request.getQuestion());
-        exist.setCategory(request.getCategory());
-        exist.setLevel(Level.valueOf(request.getLevel()));
+        validateQuestionInput(questionDTO);
 
-        exist.getOptions().clear();
-        for (QuestionOption option:  request.getOptions()) {
+        question.setQuestion(questionDTO.getQuestion());
+        question.setCategory(questionDTO.getCategory());
+        question.setLevel(Level.valueOf(questionDTO.getLevel()));
+        question.getOptions().clear();
+
+        for (QuestionOption option:  questionDTO.getOptions()) {
             QuestionOption questionOption = new QuestionOption();
             questionOption.setCorrect(option.getCorrect());
             questionOption.setOptionText(option.getOptionText());
-            questionOption.setQuestion(exist);
-            exist.getOptions().add(questionOption);
+            questionOption.setQuestion(question);
+            question.getOptions().add(questionOption);
         }
 
-        questionRepository.save(exist);
-        return questionMapper.mapToDTO(exist);
+        questionRepository.save(question);
+        return questionMapper.mapToDTO(question);
     }
 
     @Override
     @Transactional
-    public QuestionDTO create(QuestionDTO request) {
-        if (request.getOptions() == null || request.getOptions().size() != 4) {
-            throw new InvalidInputException("A question must have exactly 4 options.");
+    public QuestionDTO create(QuestionDTO questionDTO) {
+        validateQuestionInput(questionDTO);
+        Question question = questionMapper.mapToEntity(questionDTO);
+
+        if (question.getOptions() != null) {
+            question.getOptions().forEach(option -> option.setQuestion(question));
         }
 
-        boolean hasCorrectOption = request.getOptions().stream()
-                .anyMatch(option -> option.getCorrect() == 1);
-        if (!hasCorrectOption) {
-            throw new InvalidInputException("At least one option must be marked as correct.");
-        }
-
-        Question question = questionMapper.mapToEntity(request);
-
-        if (request.getOptions() != null) {
-            for (QuestionOption option : request.getOptions()) {
-                option.setQuestion(question);
-            }
-        }
 
         questionRepository.save(question);
         return questionMapper.mapToDTO(question);
@@ -132,6 +116,19 @@ public class QuestionServiceImpl implements QuestionService {
         Question question = questionRepository.findById(questionId).orElseThrow(
                 () -> new QuestionNotFoundException("Question with id: " + questionId + " not found")
         );
+        questionRepository.delete(question);
         return "Question with id: " + questionId + " deleted.";
+    }
+
+    private void validateQuestionInput(QuestionDTO questionDTO) {
+        if (questionDTO.getOptions() == null || questionDTO.getOptions().size() != 4) {
+            throw new InvalidInputException("A question must have exactly 4 options");
+        }
+
+        boolean hasCorrectOption = questionDTO.getOptions().stream()
+                .anyMatch(option -> option.getCorrect() == 1);
+        if (!hasCorrectOption) {
+            throw new InvalidInputException("At least one option mist be marked as correct");
+        }
     }
 }

@@ -18,6 +18,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
+@Transactional
 @RequiredArgsConstructor
 public class QuizServiceImpl implements QuizService {
 
@@ -63,7 +64,6 @@ public class QuizServiceImpl implements QuizService {
     }
 
     @Override
-    @Transactional
     public QuizDTO update(QuizDTO quizDTO) {
         validateLevel(quizDTO.getLevel());
         Quiz existingQuiz = quizRepository.findById(quizDTO.getId())
@@ -76,7 +76,6 @@ public class QuizServiceImpl implements QuizService {
     }
 
     @Override
-    @Transactional
     public QuizDTO create(QuizDTO quizDTO) {
         validateLevel(quizDTO.getLevel());
         Quiz newQuiz = quizMapper.mapToEntity(quizDTO);
@@ -84,7 +83,6 @@ public class QuizServiceImpl implements QuizService {
     }
 
     @Override
-    @Transactional
     public String remove(Long id) {
         Quiz quiz = quizRepository.findById(id).orElseThrow(
                 () -> new QuizNotFoundException("Quiz with id: " + id + " not found")

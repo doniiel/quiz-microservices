@@ -16,57 +16,71 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 
+
 @RestController
-@RequestMapping("/quizapp/quiz/")
+@CrossOrigin("*")
+@RequestMapping("/quizapp/quizzes/")
 @RequiredArgsConstructor
 public class QuizController {
 
     private final QuizService quizService;
 
+    // get by id
     @GetMapping("/{id}")
     public ResponseEntity<QuizDTO> getById(@PathVariable("id") Long quizId) {
         return ResponseEntity.ok(quizService.getById(quizId));
     }
 
-    @GetMapping("/title/{str}")
-    public QuizDTO getByTitle(@PathVariable("str") String title) {
-        return quizService.getByTitle(title);
+    // get by title
+    @GetMapping("/title/{title}")
+    public ResponseEntity<QuizDTO> getByTitle(@PathVariable String title) {
+        return ResponseEntity.ok(quizService.getByTitle(title));
     }
 
-    @GetMapping("/level/{lvl}")
-    public List<QuizDTO> getAllByLevel(@PathVariable("lvl") String level) {
-        return quizService.getAllByLevel(level);
+    // get by title
+    @GetMapping("/level/{level}")
+    public ResponseEntity<List<QuizDTO>> getAllByLevel(@PathVariable String level) {
+        return ResponseEntity.ok(quizService.getAllByLevel(level));
     }
 
-    @GetMapping("/category/{cat}")
-    public List<QuizDTO> getAllByCategory(@PathVariable("cat") String category) {
-        return quizService.getCategory(category);
+    // get by category
+    @GetMapping("/category/{category}")
+    public ResponseEntity<List<QuizDTO>> getAllByCategory(@PathVariable String category) {
+        return ResponseEntity.ok(quizService.getCategory(category));
     }
 
-    @PutMapping("")
-    public QuizDTO update(@RequestBody QuizDTO quizDTO) {
-        return quizService.update(quizDTO);
+    // update by id
+    @PutMapping("/{id}")
+    public ResponseEntity<QuizDTO> update(@PathVariable Long id,@RequestBody QuizDTO quizDTO) {
+        quizDTO.setId(id);
+        return ResponseEntity.ok(quizService.update(quizDTO));
     }
 
-    @PostMapping("")
-    public QuizDTO create(@RequestBody QuizDTO quizDTO) {
-        return quizService.create(quizDTO);
+    // create quiz
+    @PostMapping
+    public ResponseEntity<QuizDTO> create(@RequestBody QuizDTO quizDTO) {
+        return new ResponseEntity<>(quizService.create(quizDTO), HttpStatus.CREATED);
     }
 
+
+    // delete by id
     @DeleteMapping("/{id}")
     public ResponseEntity<String> remove(@PathVariable("id") Long quizId) {
-        return new ResponseEntity<>(quizService.remove(quizId), HttpStatus.OK);
+        return ResponseEntity.ok(quizService.remove(quizId));
     }
 
     /* Feign Client API*/
-    @PostMapping("/questions")
-    public QuestionDTO create(@RequestBody QuestionDTO request) {
-        return quizService.createQuestion(request);
+
+    // create question
+    @PostMapping("/create")
+    public ResponseEntity<QuestionDTO> createQuestion(@RequestBody QuestionDTO request) {
+        return new ResponseEntity<>(quizService.createQuestion(request), HttpStatus.CREATED);
     }
 
+    // get question by quiz_id
     @GetMapping("/quiz/{quizId}")
-    public List<QuestionDTO> getAllByQuizId(@PathVariable("quizId") Long id) {
-        return quizService.getAllByQuizId(id);
+    public ResponseEntity<List<QuestionDTO>> getAllByQuizId(@PathVariable("quizId") Long id) {
+        return ResponseEntity.ok(quizService.getAllByQuizId(id));
     }
 
 }

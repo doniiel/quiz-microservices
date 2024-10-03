@@ -17,6 +17,6 @@ public interface QuestionClient {
     @GetMapping("/quiz/{quizId}")
     List<QuestionDTO> getAllByQuizId(@PathVariable("quizId") Long id);
 
-    @PostMapping("/questions")
+    @PostMapping("/create")
     QuestionDTO createQuestion(@RequestBody QuestionDTO request);
 }

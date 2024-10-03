@@ -11,8 +11,8 @@ public interface QuestionService {
     List<QuestionDTO> getAllByLevel(String level);
     List<QuestionDTO> getAllByCategoryAndLevel(String category, String level);
     List<QuestionDTO> getAll();
-    QuestionDTO update(QuestionDTO request);
-    QuestionDTO create(QuestionDTO request);
+    QuestionDTO update(Long questionId, QuestionDTO questionDTO);
+    QuestionDTO create(QuestionDTO questionDTO);
     String remove(Long questionId);
 
 
