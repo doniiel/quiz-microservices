@@ -25,45 +25,53 @@ public class QuizController {
 
     private final QuizService quizService;
 
-    // get by id
+    // GET a quiz by its ID
+    // URL: http://localhost:8762/quizapp/quizzes/{id}
     @GetMapping("/{id}")
     public ResponseEntity<QuizDTO> getById(@PathVariable("id") Long quizId) {
         return ResponseEntity.ok(quizService.getById(quizId));
     }
 
-    // get by title
+
+    // GET a quiz by its title
+    // URL: http://localhost:8762/quizapp/quizzes/title/{title}
     @GetMapping("/title/{title}")
     public ResponseEntity<QuizDTO> getByTitle(@PathVariable String title) {
         return ResponseEntity.ok(quizService.getByTitle(title));
     }
 
-    // get by title
+    // GET all quizzes by level
+    // URL: http://localhost:8762/quizapp/quizzes/level/{level}
     @GetMapping("/level/{level}")
     public ResponseEntity<List<QuizDTO>> getAllByLevel(@PathVariable String level) {
         return ResponseEntity.ok(quizService.getAllByLevel(level));
     }
 
-    // get by category
+    // GET all quizzes by category
+    // URL: http://localhost:8762/quizapp/quizzes/category/{category}
     @GetMapping("/category/{category}")
     public ResponseEntity<List<QuizDTO>> getAllByCategory(@PathVariable String category) {
         return ResponseEntity.ok(quizService.getCategory(category));
     }
 
-    // update by id
+    // PUT request to update a quiz by ID
+    // URL: http://localhost:8762/quizapp/quizzes/{id}
     @PutMapping("/{id}")
     public ResponseEntity<QuizDTO> update(@PathVariable Long id,@RequestBody QuizDTO quizDTO) {
         quizDTO.setId(id);
         return ResponseEntity.ok(quizService.update(quizDTO));
     }
 
-    // create quiz
+    // POST request to create a new quiz
+    // URL: http://localhost:8762/quizapp/quizzes
     @PostMapping
     public ResponseEntity<QuizDTO> create(@RequestBody QuizDTO quizDTO) {
         return new ResponseEntity<>(quizService.create(quizDTO), HttpStatus.CREATED);
     }
 
 
-    // delete by id
+    // DELETE a quiz by ID
+    // URL: http://localhost:8762/quizapp/quizzes/{id}
     @DeleteMapping("/{id}")
     public ResponseEntity<String> remove(@PathVariable("id") Long quizId) {
         return ResponseEntity.ok(quizService.remove(quizId));
@@ -71,13 +79,15 @@ public class QuizController {
 
     /* Feign Client API*/
 
-    // create question
+    // POST request to create a question for a quiz
+    // URL: http://localhost:8762/quizapp/quizzes/create
     @PostMapping("/create")
     public ResponseEntity<QuestionDTO> createQuestion(@RequestBody QuestionDTO request) {
         return new ResponseEntity<>(quizService.createQuestion(request), HttpStatus.CREATED);
     }
 
-    // get question by quiz_id
+    // GET all questions by quiz ID using Feign Client
+    // URL: http://localhost:8762/quizapp/quizzes/quiz/{quizId}
     @GetMapping("/quiz/{quizId}")
     public ResponseEntity<List<QuestionDTO>> getAllByQuizId(@PathVariable("quizId") Long id) {
         return ResponseEntity.ok(quizService.getAllByQuizId(id));
