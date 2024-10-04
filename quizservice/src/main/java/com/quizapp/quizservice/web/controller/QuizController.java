@@ -69,8 +69,8 @@ public class QuizController {
     }
 
     // POST request to create a new quiz
-    // URL: http://localhost:8762/quizapp/quizzes/create
-    @PostMapping("/create")
+    // URL: http://localhost:8762/quizapp/quizzes/createQuiz
+    @PostMapping("/createQuiz")
     public ResponseEntity<QuizDTO> create(@RequestBody QuizDTO quizDTO) {
         return new ResponseEntity<>(quizService.create(quizDTO), HttpStatus.CREATED);
     }

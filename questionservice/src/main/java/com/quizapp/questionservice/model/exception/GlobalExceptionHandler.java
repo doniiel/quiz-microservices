@@ -64,12 +64,4 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         return new ResponseEntity<>(errors, HttpStatus.CONFLICT);
     }
 
-
-    @ExceptionHandler(Exception.class)
-    public ResponseEntity<?> handleException(Exception ex) {
-        Map<String, String> errors = new HashMap<>();
-        errors.put("error", ex.getMessage());
-        return new ResponseEntity<>(errors, HttpStatus.INTERNAL_SERVER_ERROR);
-    }
-
 }
